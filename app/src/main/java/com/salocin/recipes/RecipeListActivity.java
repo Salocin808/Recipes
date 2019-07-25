@@ -1,19 +1,22 @@
 package com.salocin.recipes;
 
+import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.salocin.recipes.adapters.OnRecipeListener;
 import com.salocin.recipes.adapters.RecipeRecyclerAdapter;
 import com.salocin.recipes.models.Recipe;
-import com.salocin.recipes.util.Testing;
 import com.salocin.recipes.viewmodels.RecipeListViewModel;
 
 import java.util.List;
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeListener {
+
+    private static final String TAG = "RecipeListActivity";
 
     private RecipeListViewModel mRecipeListViewModel;
     private RecyclerView mRecyclerView;
@@ -23,18 +26,20 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRecipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
-
         setContentView(R.layout.activity_recipe_list);
+        mRecyclerView = findViewById(R.id.recipe_list);
+
+        mRecipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
 
         subscribeObservers();
         initRecyclerView();
+        testRetrofitRequest();
     }
 
     private void initRecyclerView() {
-        mRecyclerView = findViewById(R.id.recipe_list);
         mAdapter = new RecipeRecyclerAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void testRetrofitRequest() {
@@ -52,7 +57,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onRecipeClick(int position) {
-        //load detail page
+        Log.d(TAG, "onRecipeClick: clicked. " + position);
     }
 
     @Override

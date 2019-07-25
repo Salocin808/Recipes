@@ -12,7 +12,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.salocin.recipes.R;
 import com.salocin.recipes.models.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.String.valueOf;
 
 public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
@@ -21,6 +24,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public RecipeRecyclerAdapter(OnRecipeListener mOnRecipeListener) {
         this.mOnRecipeListener = mOnRecipeListener;
+        mRecipes = new ArrayList<>();
     }
 
     public void setRecipes(List<Recipe> mRecipes) {
@@ -45,6 +49,10 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 .setDefaultRequestOptions(options)
                 .load(mRecipes.get(position).getImage_url())
                 .into(((RecipeViewHolder) holder).image);
+
+        ((RecipeViewHolder) holder).title.setText(mRecipes.get(position).getTitle());
+        ((RecipeViewHolder) holder).publisher.setText(mRecipes.get(position).getPublisher());
+        ((RecipeViewHolder) holder).socialScore.setText(valueOf(Math.round(mRecipes.get(position).getSocial_rank())));
     }
 
     @Override
@@ -67,7 +75,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             title = itemView.findViewById(R.id.recipe_title);
             publisher = itemView.findViewById(R.id.recipe_publisher);
             socialScore = itemView.findViewById(R.id.recipe_social_score);
-            image = itemView.findViewById(R.id.image);
+            image = itemView.findViewById(R.id.recipe_image);
 
             itemView.setOnClickListener(this);
         }
