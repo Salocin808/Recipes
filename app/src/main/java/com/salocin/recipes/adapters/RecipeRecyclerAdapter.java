@@ -1,5 +1,6 @@
 package com.salocin.recipes.adapters;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -10,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.salocin.recipes.R;
 import com.salocin.recipes.models.Recipe;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -31,7 +31,8 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recipe_list_item, parent, false);
+        return new RecipeViewHolder(view, mOnRecipeListener);
     }
 
     @Override

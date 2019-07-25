@@ -1,6 +1,6 @@
 package com.salocin.recipes.adapters;
 
-interface OnRecipeListener {
+public interface OnRecipeListener {
 
     void onRecipeClick(int position);
 
