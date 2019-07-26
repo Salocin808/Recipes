@@ -1,8 +1,8 @@
 package com.salocin.recipes;
 
 import android.util.Log;
-import android.view.View;
 import android.os.Bundle;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +33,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
         subscribeObservers();
         initRecyclerView();
-        testRetrofitRequest();
+        initSearchView();
     }
 
     private void initRecyclerView() {
@@ -41,16 +41,28 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
-    private void testRetrofitRequest() {
-        mRecipeListViewModel.searchRecipesApi("chicken", 1);
-    }
-
     public void subscribeObservers(){
         mRecipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
                 mAdapter.setRecipes(recipes);
+            }
+        });
+    }
+
+    private void initSearchView(){
+        final SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.displayLoading();
+                mRecipeListViewModel.searchRecipesApi(query, 1);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
     }
