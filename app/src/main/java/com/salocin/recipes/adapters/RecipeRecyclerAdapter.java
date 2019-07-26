@@ -1,16 +1,16 @@
 package com.salocin.recipes.adapters;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.salocin.recipes.R;
 import com.salocin.recipes.models.Recipe;
+import com.salocin.recipes.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
+    private static final int CATEGORY_TYPE = 3;
 
     private List<Recipe> mRecipes;
     private OnRecipeListener mOnRecipeListener;
@@ -49,6 +50,10 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_loading_list_item, parent, false);
                 return new LoadingViewHolder(view);
             }
+            case CATEGORY_TYPE: {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_category_list_item, parent, false);
+                return new CategoryViewHolder(view, mOnRecipeListener);
+            }
 
             default: {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recipe_list_item, parent, false);
@@ -74,12 +79,29 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((RecipeViewHolder) holder).publisher.setText(mRecipes.get(position).getPublisher());
             ((RecipeViewHolder) holder).socialScore.setText(valueOf(Math.round(mRecipes.get(position).getSocial_rank())));
         }
+
+        if (itemViewType == CATEGORY_TYPE) {
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .error(R.drawable.ic_launcher_background);
+
+            Uri path = Uri.parse("android.resource://com.salocin.recipes/drawable/" + mRecipes.get(position).getImage_url());
+
+            Glide.with(((CategoryViewHolder) holder).itemView)
+                    .setDefaultRequestOptions(options)
+                    .load(path)
+                    .into(((CategoryViewHolder) holder).categoryImage);
+
+            ((CategoryViewHolder) holder).categoryTitle.setText(mRecipes.get(position).getTitle());
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
         if (mRecipes.get(position).getTitle().equals("LOADING..."))
             return LOADING_TYPE;
+        else if(mRecipes.get(position).getSocial_rank() == -1)
+            return CATEGORY_TYPE;
         return RECIPE_TYPE;
     }
 
@@ -97,6 +119,19 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
+    public void displayCategories(){
+        List<Recipe> categories = new ArrayList<>();
+        for(int i = 0; i < Constants.DEFAULT_SEARCH_CATEGORIES.length; i++){
+            Recipe recipe = new Recipe();
+            recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORIES[i]);
+            recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
+            recipe.setSocial_rank(-1);
+            categories.add(recipe);
+        }
+        mRecipes = categories;
+        notifyDataSetChanged();
+    }
+
     private boolean isLoading(){
         if(mRecipes.size() > 0){
             if(mRecipes.get(mRecipes.size() - 1).getTitle().equals("LOADING..."))
@@ -108,31 +143,5 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemCount() {
         return mRecipes.size();
-    }
-
-    class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        //view
-        TextView title, publisher, socialScore;
-        AppCompatImageView image;
-        OnRecipeListener onRecipeListener;
-
-        public RecipeViewHolder(@NonNull View itemView, OnRecipeListener onRecipeListener) {
-            super(itemView);
-
-            this.onRecipeListener = onRecipeListener;
-
-            title = itemView.findViewById(R.id.recipe_title);
-            publisher = itemView.findViewById(R.id.recipe_publisher);
-            socialScore = itemView.findViewById(R.id.recipe_social_score);
-            image = itemView.findViewById(R.id.recipe_image);
-
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onRecipeListener.onRecipeClick(getAdapterPosition());
-        }
     }
 }
