@@ -16,6 +16,7 @@ public class RecipeApiClient {
 
     private static RecipeApiClient instance;
     private MutableLiveData<List<Recipe>> mRecipes;
+    private Call<RecipeSearchResponse> call;
 
     public static RecipeApiClient getInstance() {
         if (instance == null)
@@ -36,7 +37,7 @@ public class RecipeApiClient {
         final int pageNumber = page;
 
         // make request
-        Call<RecipeSearchResponse> call = ServiceGenerator.getRecipeApi().searchRecipe(
+        call = ServiceGenerator.getRecipeApi().searchRecipe(
                 Constants.API_KEY,
                 query,
                 String.valueOf(page));
@@ -66,5 +67,10 @@ public class RecipeApiClient {
                 t.printStackTrace();
             }
         });
+    }
+
+    public void cancelRequest(){
+        if(call != null)
+            call.cancel();
     }
 }
