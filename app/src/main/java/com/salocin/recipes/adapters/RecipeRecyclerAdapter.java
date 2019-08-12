@@ -148,4 +148,13 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemCount() {
         return mRecipes.size();
     }
+
+    public Recipe getSelectedRecipe(int postion){
+        if(mRecipes != null){
+            if(mRecipes.size() > 0){
+                return mRecipes.get(postion);
+            }
+        }
+        return null;
+    }
 }

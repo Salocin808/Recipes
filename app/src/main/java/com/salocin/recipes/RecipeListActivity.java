@@ -1,5 +1,6 @@
 package com.salocin.recipes;
 
+import android.content.Intent;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.salocin.recipes.adapters.OnRecipeListener;
 import com.salocin.recipes.adapters.RecipeRecyclerAdapter;
 import com.salocin.recipes.models.Recipe;
+import com.salocin.recipes.requests.RecipeApi;
 import com.salocin.recipes.util.VerticalSpacingItemDecorator;
 import com.salocin.recipes.viewmodels.RecipeListViewModel;
 
@@ -104,7 +106,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onRecipeClick(int position) {
-        Log.d(TAG, "onRecipeClick: clicked. " + position);
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra("recipe", mAdapter.getSelectedRecipe(position));
+        startActivity(intent);
     }
 
     @Override
