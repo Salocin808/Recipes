@@ -102,6 +102,10 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return LOADING_TYPE;
         else if(mRecipes.get(position).getSocial_rank() == -1)
             return CATEGORY_TYPE;
+        else if(position == mRecipes.size() - 1
+                && position != 0
+                && !mRecipes.get(position).getTitle().equals("EXHAUSTED..."))
+            return LOADING_TYPE;
         return RECIPE_TYPE;
     }
 
